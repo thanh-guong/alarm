@@ -29,4 +29,4 @@ The sensor requires external power supply (in the manual is said between 9v and 
 - GPIO_Y: Is the pin to wire on Raspberry Pi for reading the Reed Switch.
 - GPIO_Z: Is the pin to wire on Raspberry Pi for reading the Tamper Switch.
 
-![wiring](https://github.com/thanh-guong/alarm/blob/master/circuit.jpg?raw=true)
+![wiring](https://raw.githubusercontent.com/thanh-guong/alarm/master/image/circuit.jpg)
