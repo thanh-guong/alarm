@@ -30,3 +30,22 @@ The sensor requires external power supply (in the manual is said between 9v and 
 - GPIO_Z: Is the pin to wire on Raspberry Pi for reading the Tamper Switch.
 
 ![wiring](https://raw.githubusercontent.com/thanh-guong/alarm/master/image/circuit.jpg)
+
+## Software
+
+This software system is based on a server which communicate with a Raspberry Pi placed in the alarmed zone.
+
+### Overall architecture
+
+Below is described the architecture of the System. A server communicates asynchronously with the Raspberry (publisher/subscriber pattern). The Raspberry will produce a message if there's an alarm situation in the alarmed zone.
+All the components should be runnable on different nodes.
+
+Elements short description:
+- GPIO: Is just the software interface that Raspberry Pi offers to interact with GPIO ports on the board. GPIO ports on the board are connected to the Risco ShockTec RK601SM0000B sensor.
+- Alarm: Reads data from GPIO (from the sensor), and triggers Alarm publisher if an alarm situation is detected.
+- Alarm publisher: This element is a Proxy, it just pushes messages on the channel if requested to do that.
+- Alarm channel: Publisher/Subscriber channel
+- Alarm subscriber: This element is a Proxy, it just forward messages received on the channels where it is subscribed.
+- Alarm Telegram bot: A Telegram bot. Forwards alarm messages, or warns if an alarmed zone doesn't reply to heartbeat.
+
+![software-architecture](https://raw.githubusercontent.com/thanh-guong/alarm/master/image/software-architecture.jpg)
