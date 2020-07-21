@@ -36,14 +36,14 @@ while True:
     # remember that the sensor is NC (Normally Closed), so if the switch is closed, it's all ok.
     if not alarm.is_pressed:
         log_message("Alarm triggered")
-        # TODO: communicate this event on the asynchronous channel
+        # TODO: communicate this event on the asynchronous channel (see https://pypi.org/project/kafka-python/)
 
     if not reed.is_pressed:
         log_message("Reed triggered")
-        # TODO: communicate this event on the asynchronous channel
+        # TODO: communicate this event on the asynchronous channel (see https://pypi.org/project/kafka-python/)
 
     if not tamper.is_pressed:
         log_message("Tamper triggered")
-        # TODO: communicate this event on the asynchronous channel
+        # TODO: communicate this event on the asynchronous channel (see https://pypi.org/project/kafka-python/)
 
     time.sleep(TICKING_TIME)
