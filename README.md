@@ -1,4 +1,4 @@
-# alarm
+# Alarm
 I need an alarm for my garage.
 
 ## Prerequisites
@@ -7,7 +7,7 @@ You need to have:
 - **Risco ShockTec** [RK601SM0000B](https://www.riscogroup.com/italy/products/product/2694) sismic sensor
 - [**Raspberry Pi**](https://www.raspberrypi.org/)
 
-## Electronics
+# Electronics
 
 The circuit is built using a Raspberry Pi as controller, and a Risco ShockTec RK601SM0000B as thief detection sensor.
 
@@ -31,11 +31,11 @@ The sensor requires external power supply (in the manual is said between 9v and 
 
 ![wiring](https://raw.githubusercontent.com/thanh-guong/alarm/master/image/circuit.jpg)
 
-## Software
+# Software
 
 This software system is based on a server which communicate with a Raspberry Pi placed in the alarmed zone.
 
-### Overall architecture
+## Overall architecture
 
 Below is described the architecture of the System. A server communicates asynchronously with the Raspberry (publisher/subscriber pattern). The Raspberry will produce a message if there's an alarm situation in the alarmed zone.
 All the components should be runnable on different nodes.
@@ -49,3 +49,23 @@ Elements short description:
 - Alarm Telegram bot: A Telegram bot. Forwards alarm messages, or warns if an alarmed zone doesn't reply to heartbeat.
 
 ![software-architecture](https://raw.githubusercontent.com/thanh-guong/alarm/master/image/software-architecture.jpg)
+
+## Telegram bot
+
+This is a python implementation of the Telegram bot which should inform me when the alarm triggers.
+
+### Telegram token (this is a prerequisite)
+
+Telegram uses a token based system to identify bot back-ends. You can see a guide about this [here](https://core.telegram.org/bots#3-how-do-i-create-a-bot)
+
+To hide this token, i added a file called **secrets** to _.gitignore_.
+You just have to create a file called _secrets_, and paste your token inside it.
+
+ ### Running
+ 
+ If you want to run this using Docker (recommended) open your terminal in telegram-bot directory of this project and:
+ - On **Windows**: `build-and-run.bat`
+ - On **Unix**: `sh build-and-run.sh`
+ 
+ If you want to run this without docker, open your terminal in telegram-bot directory of this project and:
+`python telegram-bot.py`
