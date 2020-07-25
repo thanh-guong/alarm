@@ -1,24 +1,33 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
-# This program is dedicated to the public domain under the CC0 license.
+
+import logging
+
+from telegram.ext import Updater, CommandHandler, MessageHandler
+from telegram import Bot
+
+import paho.mqtt.client as mqtt
 
 SUBSCRIBERS_FILENAME = "subscribers"
 SECRETS_FILENAME = "secrets"
 
-"""
-Simple Bot to reply to Telegram messages.
-First, a few handler functions are defined. Then, those functions are passed to
-the Dispatcher and registered at their respective places.
-Then, the bot is started and runs until we press Ctrl-C on the command line.
-Usage:
-Basic Echobot example, repeats messages.
-Press Ctrl-C on the command line or send a signal to the process to stop the
-bot.
-"""
+MQTT_HOST = "mqtt"
+MQTT_PORT = 1883
+MQTT_TOPIC = "thanh-guong-alarm"
 
-import logging
 
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+def get_telegram_bot_subscribers():
+    file = open(SUBSCRIBERS_FILENAME, "r")
+    subscribers = file.readlines()
+    file.close()
+    return subscribers
+
+
+def secret():
+    file = open(SECRETS_FILENAME, "r")
+    secret = file.readline()
+    file.close()
+    return secret
+
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -34,27 +43,15 @@ def start(update, context):
     update.message.reply_text('Hi!')
 
 
-def help_command(update, context):
-    """Send a message when the command /help is issued."""
-    update.message.reply_text('Help!')
-
-
-def echo(update, context):
-    """Echo the user message."""
-    update.message.reply_text(update.message.text)
-
-
 def subscribe(update, context):
     exists = False
 
     user_id = str(update.message.chat.id)
 
-    file = open(SUBSCRIBERS_FILENAME, "r")
-    lines = file.readlines()
-    file.close()
+    subscribers = get_telegram_bot_subscribers()
 
-    for line in lines:
-        if user_id == line.strip("\n"):
+    for subscriber in subscribers:
+        if user_id == subscriber.strip("\n"):
             exists = True
 
     if not exists:
@@ -71,26 +68,49 @@ def subscribe(update, context):
 def unsubscribe(update, context):
     user_id = str(update.message.chat.id)
 
-    file = open(SUBSCRIBERS_FILENAME, "r")
-    lines = file.readlines()
-    file.close()
+    subscribers = get_telegram_bot_subscribers()
 
     # rewrite every subscriber
     file = open(SUBSCRIBERS_FILENAME, "w")
-    for line in lines:
-        if user_id != line.strip("\n"):
-            file.write(str(line))
+    for subscriber in subscribers:
+        if user_id != subscriber.strip("\n"):
+            file.write(str(subscriber) + "\n")
 
     file.close()
     update.message.reply_text("Subscription removed")
 
 
-def secret():
-    file = open(SECRETS_FILENAME, "r")
-    return file.readline()
+# The callback for when the client receives a CONNACK response from the server.
+def on_connect(client, userdata, flags, rc):
+    print("Connected with result code " + str(rc))
+
+    # Subscribing in on_connect() means that if we lose the connection and
+    # reconnect then subscriptions will be renewed.
+    client.subscribe(MQTT_TOPIC)
+
+    bot = Bot(secret())
+    subscribers = get_telegram_bot_subscribers()
+
+    message = "Connected to message broker"
+
+    for sub in subscribers:
+        bot.send_message(sub, message)
+
+
+# The callback for when a PUBLISH message is received from the server.
+def on_message(client, userdata, msg):
+    bot = Bot(secret())
+    subscribers = get_telegram_bot_subscribers()
+
+    message = msg.topic + " " + str(msg.payload)
+
+    for sub in subscribers:
+        bot.send_message(sub.strip("\n"), message)
+    print(msg.topic + " " + str(msg.payload))
 
 
 def main():
+
     """Start the bot."""
     # Create the Updater and pass it your bot's token.
     # Make sure to set use_context=True to use the new context based callbacks
@@ -105,11 +125,22 @@ def main():
     dp.add_handler(CommandHandler("subscribe", subscribe))
     dp.add_handler(CommandHandler("unsubscribe", unsubscribe))
 
-    # on noncommand i.e message - echo the message on Telegram
-    dp.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
-
     # Start the Bot
     updater.start_polling()
+
+    # MQTT
+
+    client = mqtt.Client()
+    client.on_connect = on_connect
+    client.on_message = on_message
+
+    client.connect(MQTT_HOST, MQTT_PORT, 60)
+
+    # Blocking call that processes network traffic, dispatches callbacks and
+    # handles reconnecting.
+    # Other loop*() functions are available that give a threaded interface and a
+    # manual interface.
+    client.loop_forever()
 
     # Run the bot until you press Ctrl-C or the process receives SIGINT,
     # SIGTERM or SIGABRT. This should be used most of the time, since

@@ -2,5 +2,5 @@ FROM python:3.8
 
 ADD . /
 
-RUN pip install python-telegram-bot
+RUN pip install -r requirements.txt
 CMD [ "python", "./telegram-bot.py" ]

@@ -1,0 +1,8 @@
+version: '3'
+services:
+    telegramquitto:
+        build: .
+    mqtt:
+        image: eclipse-mosquitto
+        ports:
+        - 1883:1883
