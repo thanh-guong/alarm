@@ -1,7 +1,10 @@
 version: '3'
+
 services:
-    telegramquitto:
-        build: .
+    telegram-bot:
+        build: telegram-bot
+    consumer-proxy:
+        build: consumer-proxy
     mqtt:
         image: eclipse-mosquitto
         ports:

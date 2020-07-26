@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+    alarm:
+        build: alarm
+    producer-proxy:
+        build: producer-proxy
