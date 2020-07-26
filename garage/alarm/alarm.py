@@ -2,10 +2,7 @@ import pathlib
 import time
 
 from gpiozero import Button
-
-from src.log_lib import log_message
-
-from datetime import date
+from log_lib import log_message
 
 # # CONFIGURATION   #
 
