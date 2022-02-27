@@ -4,4 +4,4 @@ ADD consumer-proxy.py /
 ADD requirements.txt /
 
 RUN pip install -r requirements.txt
-CMD [ "python", "./consumer-proxy.py" ]
+CMD [ "python", "-u", "./consumer-proxy.py" ]

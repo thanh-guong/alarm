@@ -6,4 +6,4 @@ ADD subscribers /
 ADD requirements.txt /
 
 RUN pip install -r requirements.txt
-CMD [ "python", "./telegram-bot.py" ]
+CMD [ "python", "-u", "./telegram-bot.py" ]

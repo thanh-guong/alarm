@@ -5,7 +5,11 @@ services:
         build: telegram-bot
     consumer-proxy:
         build: consumer-proxy
-    mqtt:
+    mosquitto:
         image: eclipse-mosquitto
         ports:
         - 1883:1883
+        volumes:
+        - ./mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
+        - ./mosquitto/data:/mosquitto/data
+        - ./mosquitto/log:/mosquitto/log

@@ -5,4 +5,4 @@ ADD log_lib.py /
 ADD requirements.txt /
 
 RUN pip install -r requirements.txt
-CMD [ "python", "./alarm.py" ]
+CMD [ "python", "-u", "./alarm.py" ]

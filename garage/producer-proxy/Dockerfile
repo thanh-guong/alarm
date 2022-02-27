@@ -4,4 +4,4 @@ ADD producer-proxy.py /
 ADD requirements.txt /
 
 RUN pip install -r requirements.txt
-CMD [ "python", "./producer-proxy.py" ]
+CMD [ "python", "-u", "./producer-proxy.py" ]

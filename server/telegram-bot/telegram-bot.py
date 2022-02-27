@@ -10,7 +10,7 @@ SECRETS_FILENAME = "secrets"
 
 import paho.mqtt.client as mqtt
 
-MQTT_HOST = "mqtt"
+MQTT_HOST = "mosquitto"
 MQTT_PORT = 1883
 MQTT_CONSUME_TOPIC = "alarm/home-to-garage-proxy"
 
@@ -114,6 +114,8 @@ def telegram_bot():
 
 # The callback for when the client receives a CONNACK response from the server.
 def mqtt_on_connect(client, userdata, flags, rc):
+    print("Connected with result code " + str(rc))
+
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
     client.subscribe(MQTT_CONSUME_TOPIC)
@@ -125,6 +127,9 @@ def mqtt_on_connect(client, userdata, flags, rc):
 # The callback for when a PUBLISH message is received from the server.
 def mqtt_on_message(client, userdata, msg):
     message = "TOPIC: [ " + msg.topic + " ] " + str(msg.payload)
+
+    print(message)
+
     forward_message_to_subscribers(message)
 
 

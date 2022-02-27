@@ -5,7 +5,7 @@ This element is a consumer for the messages coming from garage, and a producer f
 import paho.mqtt.publish as publish
 import paho.mqtt.client as mqtt
 
-MQTT_HOST = "mqtt"
+MQTT_HOST = "mosquitto"
 MQTT_PORT = 1883
 MQTT_CONSUME_TOPIC = "alarm/home-to-garage-proxy"
 MQTT_PRODUCE_TOPIC = "alarm/proxy-to-telegram-bot"
@@ -27,6 +27,8 @@ def on_connect(client, userdata, flags, rc):
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
     message = "TOPIC: [ " + msg.topic + " ] " + str(msg.payload)
+
+    print(message)
 
     # just forward the received message to the telegram-bot application
     publish.single(MQTT_PRODUCE_TOPIC, message, hostname=MQTT_HOST)
