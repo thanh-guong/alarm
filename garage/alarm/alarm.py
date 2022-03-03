@@ -3,6 +3,7 @@ import time
 
 from gpiozero import Button
 from log_lib import log_message
+from mqttpublish import publish_alarm_status
 
 # # CONFIGURATION   #
 
@@ -18,7 +19,8 @@ CURRENT_DIR = pathlib.Path(__file__).parent.absolute()
 
 # timing configuration
 
-TICKING_TIME = 1  # seconds
+TICKING_TIME = 1            # seconds
+ONLINE_TICKING_TIME = 900     # seconds (15 min)
 
 # setup
 
@@ -27,20 +29,28 @@ alarm = Button(GPIO_X)
 reed = Button(GPIO_Y)
 tamper = Button(GPIO_Z)
 
+online_counter = 0
+
 # loop forever
 while True:
 
     # remember that the sensor is NC (Normally Closed), so if the switch is closed, it's all ok.
     if not alarm.is_pressed:
         log_message("Alarm triggered")
-        # TODO: communicate this event on the asynchronous channel (see https://pypi.org/project/kafka-python/)
+        publish_alarm_status("alarm")
 
     if not reed.is_pressed:
         log_message("Reed triggered")
-        # TODO: communicate this event on the asynchronous channel (see https://pypi.org/project/kafka-python/)
+        publish_alarm_status("reed")
 
     if not tamper.is_pressed:
         log_message("Tamper triggered")
-        # TODO: communicate this event on the asynchronous channel (see https://pypi.org/project/kafka-python/)
+        publish_alarm_status("tamper")
+
+    if online_counter == ONLINE_TICKING_TIME:
+        log_message("Sending online message")
+        publish_alarm_status("online")
+        online_counter = 0
 
     time.sleep(TICKING_TIME)
+    online_counter += 1

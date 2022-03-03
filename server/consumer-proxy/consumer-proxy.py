@@ -7,8 +7,8 @@ import paho.mqtt.client as mqtt
 
 MQTT_HOST = "mosquitto"
 MQTT_PORT = 1883
-MQTT_CONSUME_TOPIC = "alarm/home-to-garage-proxy"
-MQTT_PRODUCE_TOPIC = "alarm/proxy-to-telegram-bot"
+MQTT_CONSUME_TOPIC = "alarm/from-garage"
+MQTT_PRODUCE_TOPIC = "alarm/from-proxy"
 
 
 # The callback for when the client receives a CONNACK response from the server.
