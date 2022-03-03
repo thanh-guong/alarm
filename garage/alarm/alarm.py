@@ -20,7 +20,7 @@ CURRENT_DIR = pathlib.Path(__file__).parent.absolute()
 # timing configuration
 
 TICKING_TIME = 1            # seconds
-ONLINE_TICKING_TIME = 900     # seconds (15 min)
+ONLINE_TICKING_TIME = 9     # seconds (15 min)
 
 # setup
 

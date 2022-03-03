@@ -12,7 +12,7 @@ import paho.mqtt.client as mqtt
 
 MQTT_HOST = "mosquitto"
 MQTT_PORT = 1883
-MQTT_CONSUME_TOPIC = "alarm/home-to-garage-proxy"
+MQTT_CONSUME_TOPIC = "alarm/status"
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)

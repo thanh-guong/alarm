@@ -1,7 +1,7 @@
 import paho.mqtt.publish as publish
 import paho.mqtt.client as mqtt
 
-MQTT_HOST = "localhost"
+MQTT_HOST = "mosquitto-remote"
 MQTT_PORT = 1883
 MQTT_PRODUCE_TOPIC = "alarm/status"
 
